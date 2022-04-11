@@ -27,7 +27,9 @@ defmodule Livebook.TestHelpers do
   Raises if any of the operations results in an error.
   """
   def data_after_operations!(data \\ Data.new(), operations) do
-    Enum.reduce(operations, data, fn operation, data ->
+    operations
+    |> List.flatten()
+    |> Enum.reduce(data, fn operation, data ->
       case Data.apply_operation(data, operation) do
         {:ok, data, _action} ->
           data
@@ -37,4 +39,9 @@ defmodule Livebook.TestHelpers do
       end
     end)
   end
+
+  @doc """
+  Converts a Unix-like absolute path into OS-compatible absolute path.
+  """
+  defmacro p("/" <> path), do: Path.expand("/") <> path
 end
